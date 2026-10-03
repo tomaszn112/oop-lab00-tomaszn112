@@ -6,7 +6,7 @@
 - Wersja Git: 2.43.0
 - Wersja kompilatora C++: 13.3.0
 - Wersje java i javac: 17.0.20.1
-- Link do pierwszego PR (uzupełnij w zadaniu 5): ...
+- Link do pierwszego PR (uzupełnij w zadaniu 5): https://github.com/tomaszn112/oop-lab00-tomaszn112/pull/1
 
 ## Uruchomienie lokalne
 Wynik programu C++:
@@ -19,10 +19,10 @@ Hello from Java! Author: tomaszn112
 ```
 
 ## Błąd i poprawka (zadanie 5)
-- Krótki fragment komunikatu błędu i numer linii: ...
-- Przyczyna oraz sposób naprawy: ...
-- Commit z błędem (SHA lub link): ...
-- Czy Actions pokazały błąd, a po naprawie sukces? ...
+- Krótki fragment komunikatu błędu i numer linii: error: expected ';' before 'return' (linia 5)
+- Przyczyna oraz sposób naprawy: Brak średnika na końcu instrukcji std::cout. Naprawa: dodanie średnika.
+- Commit z błędem (SHA lub link): https://github.com/tomaszn112/oop-lab00-tomaszn112/commit/39369d3819557b6488f370409abfbe8af6f81ffe
+- Czy Actions pokazały błąd, a po naprawie sukces? Tak, Actions zatrzymały się na czerwonym błędzie kompilacji, a po naprawie zakończyły się zielonym sukcesem.
 
 ## Krótkie odpowiedzi
 1. Co różni commit od push? Commit zapisuje zmiany wyłącznie lokalnie na komputerze (Git), natomiast push wysyła te zmiany do zdalnego repozytorium (np. na GitHub). 
