@@ -30,4 +30,4 @@ Hello from Java! Author: tomaszn112
 3. Co potwierdza zielony wynik naszego CI, a czego nie potwierdza? Potwierdza, że kod poprawnie kompiluje się w środowisku automatycznym (na maszynie wirtualnej), nie potwierdza natomiast poprawnej konfiguracji na lokalnym komputerze ani kompletności wykonania wszystkich poleceń / zadań. 
 
 ## Ewentualne problemy środowiska
-Brak / opis problemu i sposób rozwiązania: ...
+Brak / opis problemu i sposób rozwiązania: Problem z uwierzytelnianiem przy git push. Rozwiązano poprzez wygenerowanie i użycie tokenu PAT.
