@@ -1,242 +1,663 @@
 # Laboratorium 00 — Git, GitHub i środowisko pracy
+
 **Programowanie obiektowe · 2026/2027**
 
 ## Po co ta praca?
-Przygotujesz środowisko do kolejnych laboratoriów. Przećwiczysz pobranie repozytorium, lokalną zmianę kodu, commit, push, pracę w gałęzi i pull request. Uruchomisz gotowe programy C++ i Java oraz przeczytasz wynik automatycznej kompilacji.
 
-Nie implementujesz jeszcze klas ani testów. Nie musisz znać OOP. Gotowe programy służą do sprawdzenia narzędzi.
+Przygotujesz środowisko do kolejnych laboratoriów i poznasz sposób pracy używany na kursie w **Classroom 50**.
 
-**Forma:** indywidualna. **Ocena:** zaliczono / nie zaliczono. **Czas:** około 90 minut przy zainstalowanych narzędziach; instalację wykonaj przed zajęciami, jeśli to możliwe. Termin i sposób przekazania linku określa prowadzący.
+Przećwiczysz:
 
-Po ukończeniu potrafisz:
-- odróżnić Git od GitHub oraz repozytorium lokalne od zdalnego;
-- wykonać clone, status, diff, add, commit, push i pull;
-- utworzyć gałąź i scalić jej zmiany przez pull request;
+- przyjęcie zadania w Classroom 50;
+- sklonowanie własnego repozytorium;
+- lokalną zmianę kodu;
+- `git status`, `diff`, `add`, `commit`, `push` i `pull`;
+- pracę w osobnej gałęzi;
+- tworzenie i scalanie Pull Request;
+- uruchamianie GitHub Actions;
+- analizę błędu kompilacji.
+
+Uruchomisz również gotowe programy w **C++** i **Java**.
+
+Nie implementujesz jeszcze klas ani testów. Nie musisz znać OOP. Gotowe programy służą do sprawdzenia narzędzi oraz całego workflow Git/GitHub.
+
+**Forma:** indywidualna  
+**Ocena:** zaliczono / nie zaliczono  
+**Czas:** około 90 minut przy zainstalowanych narzędziach  
+**Oddanie:** przez repozytorium utworzone dla Ciebie przez Classroom 50
+
+Po ukończeniu laboratorium potrafisz:
+
+- odróżnić Git od GitHub;
+- odróżnić repozytorium lokalne od zdalnego;
+- wyjaśnić rolę Classroom 50 i repozytorium szablonowego;
+- wykonać `clone`, `status`, `diff`, `add`, `commit`, `push` i `pull`;
+- utworzyć gałąź;
+- utworzyć i scalić Pull Request;
 - uruchomić program C++ i Java;
 - znaleźć błąd w logu GitHub Actions;
-- wyjaśnić, dlaczego commit nie wysyła automatycznie zmian na GitHub.
+- wyjaśnić, dlaczego `commit` nie wysyła automatycznie zmian na GitHub.
 
-## 1. Przygotowanie narzędzi
-Potrzebujesz konta GitHub, Git, **JDK 17 lub nowszego** (nie tylko JRE), kompilatora **g++ obsługującego C++17** i edytora lub IDE.
+> **WAŻNE**
+>
+> Nie twórz własnego repozytorium przyciskiem **Use this template** i nie pracuj bezpośrednio w repozytorium szablonowym prowadzącego.
+>
+> Po zaakceptowaniu zadania **Classroom 50 automatycznie tworzy Twoje indywidualne repozytorium**. Całą pracę wykonujesz właśnie w tym repozytorium.
 
-Zalecana konfiguracja Windows: WSL + Ubuntu + edytor obsługujący WSL. Jeżeli masz już działające JDK i g++ w Windows, możesz użyć PowerShell. Nie instaluj drugiego środowiska bez potrzeby. Samo Visual Studio z kompilatorem MSVC nie zapewnia polecenia g++; w takim przypadku uzgodnij konfigurację z prowadzącym.
+---
+
+# 1. Przygotowanie narzędzi
+
+Potrzebujesz:
+
+- konta GitHub;
+- Git;
+- **JDK 17 lub nowszego** — nie tylko JRE;
+- kompilatora **g++ obsługującego C++17**;
+- edytora lub IDE.
+
+## Windows
+
+Zalecana konfiguracja:
+
+**WSL + Ubuntu + edytor obsługujący WSL**
+
+Jeżeli masz już działające JDK i `g++` w Windows, możesz również użyć PowerShell.
+
+Samo Visual Studio z kompilatorem MSVC nie zapewnia polecenia `g++`.
 
 ### Ubuntu / WSL Ubuntu
+
 Jeżeli narzędzi brakuje:
+
 ```bash
 sudo apt update
 sudo apt install git g++ openjdk-17-jdk
 ```
 
 ### Windows bez WSL
-Zainstaluj [Git for Windows](https://git-scm.com/downloads/win), [Temurin JDK](https://adoptium.net/temurin/releases/) oraz g++ np. przez [MSYS2](https://www.msys2.org/). Skorzystaj z instrukcji tych narzędzi dotyczących PATH. Po instalacji otwórz nowy terminal.
+
+Zainstaluj:
+
+- Git for Windows;
+- Temurin JDK 17+;
+- `g++`, np. przez MSYS2.
+
+Po instalacji otwórz nowy terminal.
 
 ### macOS
-Zainstaluj Git, JDK 17+ i kompilator C++17. Systemowe polecenie `g++` może wywoływać Apple Clang — dla tej prostej pracy jest to wystarczające. Narzędzia kompilacji można zainstalować przez `xcode-select --install`; JDK zainstaluj osobno.
 
-### Sprawdzenie — w terminalu
+Zainstaluj Git, JDK 17+ oraz kompilator C++17.
+
+Systemowe polecenie `g++` może uruchamiać Apple Clang — dla tej pracy jest to wystarczające.
+
+## Sprawdzenie narzędzi
+
+W terminalu wykonaj:
+
 ```bash
 git --version
 g++ --version
 java -version
 javac -version
 ```
-Każde polecenie powinno wypisać wersję. Jeżeli `java` działa, ale `javac` nie, sprawdź instalację JDK i PATH. Używaj tego samego środowiska do klonowania i kompilowania (np. wszystkiego w WSL).
 
-Skonfiguruj autora commitów, jeśli jeszcze tego nie zrobiłeś/aś:
+Każde polecenie powinno wypisać wersję programu.
+
+Jeżeli `java` działa, ale `javac` nie, sprawdź instalację **JDK** i konfigurację `PATH`.
+
+Używaj tego samego środowiska do klonowania repozytorium i kompilowania programu.
+
+## Konfiguracja autora commitów
+
+Jeżeli jeszcze tego nie zrobiłeś/aś:
+
 ```bash
 git config --global user.name "Twoja nazwa autora"
 git config --global user.email "TWÓJ_EMAIL_DO_COMMITÓW"
 ```
-Zastąp przykładowe wartości własnymi. Możesz użyć adresu noreply dostępnego w ustawieniach GitHub → Emails. Jest to identyfikacja autora, a nie logowanie do GitHub.
 
-## 2. Krótki słownik
+Możesz użyć adresu `noreply` dostępnego w:
+
+**GitHub → Settings → Emails**
+
+Jest to identyfikacja autora commita, a nie sposób logowania do GitHub.
+
+---
+
+# 2. Krótki słownik
+
 | Pojęcie | Znaczenie |
 |---|---|
 | Git | lokalny system kontroli wersji |
 | GitHub | serwis przechowujący repozytoria i narzędzia współpracy |
-| Repository | pliki projektu wraz z historią |
-| Clone | pobranie repozytorium z historią na komputer |
+| Classroom 50 | system dystrybucji zadań i zbierania pracy studentów oparty na GitHub |
+| Template repository | repozytorium wzorcowe przygotowane przez prowadzącego |
+| Student repository | indywidualne repozytorium utworzone dla studenta po zaakceptowaniu assignmentu |
+| Clone | pobranie repozytorium wraz z historią na komputer |
 | Working tree | pliki, które aktualnie edytujesz |
-| Stage / git add | wybór zmian do następnego commita |
+| Stage / `git add` | wybór zmian do następnego commita |
 | Commit | zapis wybranych zmian w lokalnej historii |
-| Push | wysłanie commitów do repozytorium zdalnego |
+| Push | wysłanie lokalnych commitów do repozytorium zdalnego |
 | Pull | pobranie i włączenie zmian ze zdalnego repozytorium |
 | Branch | osobna linia pracy |
-| Pull request (PR) | propozycja włączenia zmian z gałęzi do innej gałęzi |
+| Pull Request (PR) | propozycja włączenia zmian z jednej gałęzi do drugiej |
 | Merge | scalenie zmian |
-| GitHub Actions | automatyczne wykonywanie zadań, tutaj kompilacji |
+| GitHub Actions | automatyczne wykonywanie zadań, np. kompilacji |
 
-`commit` nie oznacza `push`. `pull request` nie jest poleceniem `git pull`.
+Zapamiętaj:
 
-## Zadanie 1 — Własne repozytorium zadania
-**Pracuj wyłącznie w swoim repozytorium zadania, nie w szablonie prowadzącego.**
+**`commit` ≠ `push`**
 
-Utwórz własną kopię bezpośrednio na GitHub:
-1. Otwórz link do repozytorium szablonowego podany przez prowadzącego.
-2. Wybierz **Use this template → Create a new repository**.
-3. Jako **Owner** wybierz swoje osobiste konto GitHub.
-4. Nazwij repozytorium `oop-lab00-TWOJ_LOGIN`.
-5. Ustaw widoczność wskazaną przez prowadzącego. Nie zaznaczaj **Include all branches**; wystarczy domyślna gałąź.
-6. Kliknij **Create repository** i otwórz utworzoną kopię.
+oraz
 
-To samodzielne zadanie oparte na GitHub template. Wszystkie ćwiczenia, gałęzie i PR wykonujesz w swojej kopii.
+**Pull Request ≠ `git pull`**
 
-Nie używaj Download ZIP jako sposobu pracy nad zadaniem: potrzebujemy lokalnej historii Git i powiązania ze zdalnym repozytorium. W tej pracy użyj kopii z szablonu, a nie forka.
+---
 
-Skopiuj HTTPS URL z **Code**. W terminalu:
+# Zadanie 1 — Przyjęcie zadania i własne repozytorium
+
+## Krok 1. Przyjmij zadanie w Classroom 50
+
+1. Otwórz link **Accept assignment** otrzymany od prowadzącego.
+2. Zaloguj się do właściwego konta GitHub, jeżeli jest to wymagane.
+3. Zaakceptuj zadanie.
+4. Poczekaj, aż Classroom 50 przygotuje Twoje repozytorium.
+5. Otwórz repozytorium przypisane do Ciebie.
+
+Classroom 50 tworzy repozytorium na podstawie szablonu przygotowanego przez prowadzącego.
+
+Nie musisz tworzyć własnej kopii szablonu.
+
+> **Nie wykonuj:**
+>
+> `Use this template → Create a new repository`
+>
+> Nie rób również forka repozytorium szablonowego.
+>
+> Tak utworzone repozytorium **nie jest repozytorium przypisanym do Twojego zadania w Classroom 50**.
+
+## Krok 2. Sklonuj swoje repozytorium
+
+W repozytorium utworzonym dla Ciebie kliknij:
+
+**Code → HTTPS**
+
+i skopiuj URL.
+
+Następnie w terminalu:
+
 ```bash
 git clone <HTTPS_URL_TWOJEGO_REPOZYTORIUM>
-cd <NAZWA_UTWORZONEGO_KATALOGU>
+cd <NAZWA_KATALOGU>
 git remote -v
 git status
 ```
-Wstaw rzeczywisty URL i nazwę katalogu bez nawiasów `< >`. `origin` ma wskazywać na Twoje repozytorium zadania. Domyślna gałąź w tej instrukcji to `main`; jeśli prowadzący używa innej, dostosuj polecenia.
 
-Otwórz ten katalog w IDE. Nie twórz nowego projektu poza nim. Pliki źródłowe są w `cpp/` i `java/`.
+Zastąp wartości `<...>` rzeczywistymi wartościami.
 
-Przy dostępie do prywatnego repozytorium lub przy pierwszym push może pojawić się logowanie. Użyj przeglądarkowego logowania menedżera poświadczeń lub innej metody wskazanej przez prowadzącego. Hasło konta nie służy do uwierzytelniania Git przez HTTPS. Nie wpisuj tokenów do plików projektu ani do URL zapisywanego w repozytorium.
+Polecenie:
 
-## Zadanie 2 — Gałąź i lokalne uruchomienie
+```bash
+git remote -v
+```
+
+powinno pokazać, że `origin` wskazuje na **Twoje repozytorium zadania utworzone przez Classroom 50**.
+
+Nie powinno wskazywać na:
+
+```text
+put-teaching-2026-27/oop-lab00-template
+```
+
+Nie używaj **Download ZIP** jako sposobu pracy nad zadaniem. Potrzebujemy lokalnej historii Git oraz połączenia ze zdalnym repozytorium.
+
+Otwórz sklonowany katalog w IDE.
+
+Nie twórz nowego projektu poza tym katalogiem.
+
+Pliki źródłowe znajdują się w:
+
+```text
+cpp/
+java/
+```
+
+Przy pierwszym `clone` lub `push` może pojawić się logowanie do GitHub.
+
+Nie zapisuj tokenów ani danych uwierzytelniających w repozytorium.
+
+---
+
+# Zadanie 2 — Gałąź i lokalne uruchomienie
+
 Utwórz gałąź roboczą:
+
 ```bash
 git switch -c lab00-setup
 ```
 
-### Linux / WSL / macOS — z katalogu głównego repozytorium
+Sprawdź:
+
+```bash
+git branch
+```
+
+Przy aktywnej gałęzi powinien znajdować się znak `*`.
+
+## Linux / WSL / macOS
+
+Z katalogu głównego repozytorium:
+
 ```bash
 mkdir -p build/cpp build/java
+
 g++ -std=c++17 -Wall -Wextra -Wpedantic cpp/main.cpp -o build/cpp/hello
 ./build/cpp/hello
+
 javac -encoding UTF-8 -d build/java java/Main.java
 java -cp build/java Main
 ```
 
-### Windows PowerShell — z katalogu głównego repozytorium
+## Windows PowerShell
+
 ```powershell
 New-Item -ItemType Directory -Force -Path build/cpp, build/java
+
 g++ -std=c++17 -Wall -Wextra -Wpedantic cpp/main.cpp -o build/cpp/hello.exe
 ./build/cpp/hello.exe
+
 javac -encoding UTF-8 -d build/java java/Main.java
 java -cp build/java Main
 ```
 
 Oczekiwane wyniki:
+
 ```text
 Hello from C++!
 Hello from Java!
 ```
 
-`build/` przechowuje pliki wynikowe. `.gitignore` sprawia, że nie są dodawane do historii. Po uruchomieniu sprawdź `git status`: pliki binarne i `.class` nie powinny być proponowane do commita.
+Katalog:
 
-## Zadanie 3 — Zmiana, diff, commit i push
-1. Zmień tekst w obu programach, np. `Hello from C++!` na `Hello from C++! Author: student123` i analogicznie w Java. Użyj loginu lub pseudonimu; nie musisz wpisywać danych osobowych.
-2. Skompiluj i uruchom ponownie oba programy. Sprawdź zmieniony wynik.
-3. Uzupełnij `STUDENT.md`: login, środowisko, wersje narzędzi i krótkie odpowiedzi. Nie potrzebujesz osobnego sprawozdania.
-4. Zobacz różnice i wybierz pliki do zapisu:
-   ```bash
-   git status
-   git diff
-   git add cpp/main.cpp java/Main.java STUDENT.md
-   git diff --staged
-   git commit -m "Personalize programs and document local setup"
-   git push -u origin lab00-setup
-   ```
-5. Otwórz swoją gałąź na GitHub i sprawdź, czy pliki są zmienione.
+```text
+build/
+```
 
-Git zapisuje pliki, nie sam wynik uruchomienia. Zmiana widoczna lokalnie nie jest jeszcze widoczna dla prowadzącego przed push.
+przechowuje pliki wynikowe.
 
-## Zadanie 4 — Pull request i automatyczna kontrola 
-Na GitHub otwórz **Pull requests → New pull request** (lub **Compare & pull request**).
+`.gitignore` powinien sprawić, że pliki binarne i `.class` nie zostaną dodane do repozytorium.
 
-Ustaw **base: main**, **compare: lab00-setup**, w obrębie TWOJEGO repozytorium. Nie otwieraj PR do szablonu prowadzącego.
+Sprawdź:
 
-Tytuł: `Lab00: przygotowanie środowiska`. W opisie napisz:
+```bash
+git status
+```
+
+---
+
+# Zadanie 3 — Zmiana, diff, commit i push
+
+## 1. Zmień programy
+
+Zmień tekst wypisywany przez oba programy.
+
+Przykład:
+
+```text
+Hello from C++! Author: student123
+```
+
+oraz analogicznie w Java.
+
+Użyj swojego loginu GitHub lub pseudonimu.
+
+## 2. Uruchom programy ponownie
+
+Skompiluj i uruchom oba programy.
+
+Sprawdź, czy pojawia się zmieniony komunikat.
+
+## 3. Uzupełnij STUDENT.md
+
+Uzupełnij plik:
+
+```text
+STUDENT.md
+```
+
+Wpisz wymagane informacje dotyczące środowiska, wersji narzędzi i wykonanych ćwiczeń.
+
+Nie potrzebujesz osobnego sprawozdania.
+
+## 4. Sprawdź zmiany
+
+```bash
+git status
+git diff
+```
+
+Następnie:
+
+```bash
+git add cpp/main.cpp java/Main.java STUDENT.md
+```
+
+Sprawdź staged changes:
+
+```bash
+git diff --staged
+```
+
+Wykonaj commit:
+
+```bash
+git commit -m "Personalize programs and document local setup"
+```
+
+Wyślij gałąź na GitHub:
+
+```bash
+git push -u origin lab00-setup
+```
+
+## 5. Sprawdź GitHub
+
+Otwórz swoje repozytorium w GitHub.
+
+Sprawdź, czy:
+
+- istnieje gałąź `lab00-setup`;
+- widoczny jest Twój commit;
+- zmienione pliki znajdują się w repozytorium.
+
+> Classroom 50 może zebrać tylko pracę znajdującą się w repozytorium GitHub.
+>
+> Sam lokalny `commit` bez `push` nie wysyła zmian na GitHub.
+
+---
+
+# Zadanie 4 — Pull Request i automatyczna kontrola
+
+Na GitHub otwórz:
+
+**Pull requests → New pull request**
+
+lub użyj:
+
+**Compare & pull request**
+
+Ustaw:
+
+```text
+base: main
+compare: lab00-setup
+```
+
+Obie gałęzie mają należeć do **Twojego repozytorium Classroom 50**.
+
+Nie otwieraj Pull Request do repozytorium szablonowego prowadzącego.
+
+## Pull Request
+
+Tytuł:
+
+```text
+Lab00: przygotowanie środowiska
+```
+
+W opisie napisz:
+
 - które pliki zmieniłeś/aś;
 - czy oba programy działają lokalnie;
-- czy napotkałeś/aś problem i jak go rozwiązałeś/aś.
+- czy wystąpił problem;
+- jeśli tak — jak został rozwiązany.
 
-Sprawdź zakładkę **Files changed**. Następnie otwórz **Actions → Lab00 build** i odpowiednie uruchomienie lub sekcję checks w PR. Sprawdź oba zadania: C++ i Java. Zielony wynik oznacza, że kod skompilował się i uruchomił w środowisku CI. Nie potwierdza wykonania wszystkich zadań ani konfiguracji Twojego komputera.
+Sprawdź zakładkę:
 
-Po udanej kontroli scal PR przyciskiem **Merge pull request**, o ile prowadzący nie wymaga wcześniejszego przeglądu. Następnie lokalnie:
+**Files changed**
+
+Następnie sprawdź wyniki **GitHub Actions / Checks**.
+
+Zielony wynik oznacza, że kod przeszedł skonfigurowaną automatyczną kontrolę.
+
+Nie oznacza to automatycznie, że wykonano wszystkie wymagania laboratorium.
+
+## Merge
+
+Po udanej kontroli scal PR:
+
+**Merge pull request → Confirm merge**
+
+Następnie lokalnie:
+
 ```bash
 git switch main
 git pull --ff-only origin main
 ```
-Sprawdź, że w lokalnej gałęzi `main` są Twoje zmiany. Zachowaj link do scalonego PR w `STUDENT.md` w następnym zadaniu.
 
-## Zadanie 5 — Rozpoznanie i poprawienie błędu 
+Sprawdź:
+
+```bash
+git status
+git log --oneline -5
+```
+
+Twój lokalny `main` powinien zawierać zmiany scalone na GitHub.
+
+---
+
+# Zadanie 5 — Rozpoznanie i poprawienie błędu
+
 Z aktualnej gałęzi `main` utwórz nową gałąź:
+
 ```bash
 git switch -c lab00-debug
 ```
 
-1. W `cpp/main.cpp` usuń średnik na końcu instrukcji wypisującej tekst.
-2. Spróbuj skompilować program. Przeczytaj komunikat; nie uruchamiaj starego pliku wykonywalnego jako dowodu poprawności nowego kodu.
-3. Zapisz celowo błędną wersję na tej gałęzi:
-   ```bash
-   git add cpp/main.cpp
-   git commit -m "Exercise: introduce a compilation error"
-   git push -u origin lab00-debug
-   ```
-4. W **Actions** otwórz uruchomienie dla tego commita, zadanie C++ i krok kompilacji. Znajdź błąd oraz numer linii. Czerwony wynik jest w tej części oczekiwany. Jeśli popełnienie błędu weryfikujesz wyłącznie lokalnie z powodu wyłączonych Actions, odnotuj to w `STUDENT.md`.
-5. Przywróć średnik, skompiluj i uruchom program lokalnie.
-6. W `STUDENT.md` wpisz komunikat błędu, sposób naprawy oraz link do pierwszego PR. Opisz, co potwierdza CI, a czego nie potwierdza.
-7. Zapisz poprawkę:
-   ```bash
-   git add cpp/main.cpp STUDENT.md
-   git commit -m "Fix compilation error and complete Lab00 notes"
-   git push
-   ```
-8. Otwórz drugi PR: **lab00-debug → main**. Poczekaj na zielony wynik dla poprawionego commita i scal PR zgodnie z zasadą z zadania 4. Następnie:
-   ```bash
-   git switch main
-   git pull --ff-only origin main
-   git status
-   git log --oneline -5
-   ```
+## 1. Wprowadź celowy błąd
 
-Nie scalaj błędnego kodu do `main`. Historia gałęzi pozwala zobaczyć zarówno błąd, jak i poprawkę; wcześniejszy czerwony wynik nie blokuje zaliczenia, jeśli finalny kod działa.
+W:
 
-## Zadanie 6 — Zaliczenie
-Przekaż prowadzącemu link do swojego repozytorium w sposób podany na zajęciach. Jeśli repozytorium jest prywatne, zapewnij prowadzącemu dostęp: w swoim repozytorium otwórz **Settings → Collaborators**, wybierz **Add people** i zaproś jego dokładny login GitHub podany na zajęciach. Prowadzący musi zaakceptować zaproszenie. Dla publicznego repozytorium do odczytu wystarczy link.
+```text
+cpp/main.cpp
+```
 
-### Lista kontrolna
-- [ ] Repozytorium zadania jest moje i zostało sklonowane lokalnie.
-- [ ] Oba programy uruchomiłem/am na swoim komputerze i zmieniłem/am ich komunikaty.
-- [ ] STUDENT.md jest uzupełniony, a wyniki kompilacji nie trafiły do Git.
-- [ ] Pierwszy PR pokazuje moje zmiany i został scalony.
-- [ ] Potrafię wskazać błędny commit i commit z poprawką.
-- [ ] Drugi PR został scalony, a finalny kod działa.
-- [ ] Finalne uruchomienie Actions na main jest zielone, jeśli Actions są dostępne.
-- [ ] Lokalny main jest zsynchronizowany po merge.
+usuń średnik na końcu instrukcji wypisującej tekst.
 
-Na krótkiej obronie pokaż uruchomienie programów i odpowiedz na dwa pytania:
-1. Co różni commit od push?
-2. Dlaczego po scaleniu PR na GitHub wykonujemy lokalnie pull?
-3. Co różni gałąź od oddzielnego repozytorium?
-4. Co sprawdza nasz workflow, a czego nie sprawdza?
+Spróbuj skompilować program.
 
-Zaliczenie wymaga działających programów, zmian w zdalnym repozytorium, historii ćwiczeń, uzupełnionego STUDENT.md i wyjaśnienia podstawowych operacji. Nie ma punktów za szybkość ani za znajomość wszystkich poleceń z pamięci.
+Przeczytaj komunikat błędu.
 
-## Typowe problemy
-| Problem | Co sprawdzić |
-|---|---|
-| `git`, `g++` lub `javac` nie znaleziono | instalacja, PATH i ponowne otwarcie terminala |
-| `Permission denied` / brak dostępu | czy origin wskazuje Twoje repozytorium i czy jesteś zalogowany/a na właściwe konto |
-| `Author identity unknown` | user.name i user.email w git config |
-| `nothing to commit` | czy zapisano plik i czy pracujesz we właściwym katalogu |
-| push odrzucony po zmianie przez przeglądarkę | nie używaj force push; sprawdź status i uzgodnij z prowadzącym bezpieczne pobranie zmian |
-| po merge lokalnie wciąż stary kod | przełącz na main i wykonaj pull |
-| czerwone Actions | przeczytaj pierwszy konkretny błąd w nieudanym kroku |
-| brak przycisku merge lub Actions | uprawnienia/polityka organizacji; poproś prowadzącego o sprawdzenie |
+## 2. Zapisz błędną wersję
 
-## Materiały i dodatkowy trening
-- [GitHub Starter Course — oficjalny materiał wprowadzający](https://github.com/classroom-resources/github-starter-course)
-- [GitHub Skills — Introduction to GitHub](https://github.com/skills/introduction-to-github)
-- [Git — podstawy](https://git-scm.com/book/en/v2/Getting-Started-Git-Basics)
-- [Klonowanie repozytorium](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)
+```bash
+git add cpp/main.cpp
+git commit -m "Exercise: introduce a compilation error"
+git push -u origin lab00-debug
+```
 
-Ta laboratoryjna instrukcja jest samodzielnym zadaniem dydaktycznym, a nie oficjalnym kursem GitHub. Łączy zakres wprowadzenia z praktyką podobną do GitHub Skills i uruchomieniem środowiska do OOP. Nie zawiera ani nie uruchamia automatycznego bota kursu Skills. Nie musisz tworzyć drugiego repozytorium. Oficjalne Skills możesz przejść dodatkowo, korzystając z instrukcji na jego stronie.
+## 3. Sprawdź GitHub Actions
 
-Możesz korzystać z dokumentacji i AI, ale musisz samodzielnie wykonać operacje i umieć je wyjaśnić. Nie oddajesz osobnej deklaracji użycia AI.
+Na GitHub otwórz wynik Actions dla tego commita.
+
+Znajdź:
+
+- nieudany krok;
+- komunikat kompilatora;
+- numer linii zawierającej błąd.
+
+**Czerwony wynik jest w tym kroku oczekiwany.**
+
+Nie traktuj czerwonego wyniku tego ćwiczenia jako problemu — celem jest nauczenie się czytania logów CI.
+
+## 4. Napraw program
+
+Przywróć średnik.
+
+Ponownie skompiluj i uruchom program lokalnie.
+
+## 5. Uzupełnij STUDENT.md
+
+Wpisz:
+
+- komunikat błędu;
+- przyczynę błędu;
+- sposób naprawy;
+- link do pierwszego PR;
+- krótką odpowiedź: co potwierdza GitHub Actions, a czego nie potwierdza?
+
+## 6. Zapisz poprawkę
+
+```bash
+git add cpp/main.cpp STUDENT.md
+git commit -m "Fix compilation error and complete Lab00 notes"
+git push
+```
+
+## 7. Utwórz drugi Pull Request
+
+Utwórz:
+
+```text
+lab00-debug → main
+```
+
+Poczekaj na poprawny wynik automatycznej kontroli.
+
+Następnie scal PR.
+
+## 8. Zsynchronizuj lokalne repozytorium
+
+```bash
+git switch main
+git pull --ff-only origin main
+git status
+git log --oneline -5
+```
+
+Nie scalaj celowo błędnego kodu do `main`.
+
+Historia gałęzi powinna pokazywać zarówno commit zawierający błąd, jak i commit zawierający poprawkę.
+
+---
+
+# Zadanie 6 — Oddanie pracy w Classroom 50
+
+**Nie tworzysz osobnego repozytorium do oddania.**
+
+**Nie dodajesz prowadzącego jako Collaboratora.**
+
+**Nie wysyłasz osobno repozytorium utworzonego poza Classroom 50.**
+
+Twoim repozytorium submission jest repozytorium utworzone automatycznie po zaakceptowaniu assignmentu w Classroom 50.
+
+## Przed zakończeniem pracy
+
+Wykonaj:
+
+```bash
+git switch main
+git pull --ff-only origin main
+git status
+git log --oneline -5
+```
+
+`git status` powinien pokazać czyste working tree.
+
+Następnie otwórz repozytorium na GitHub i sprawdź, czy:
+
+- oba Pull Request zostały scalone do `main`;
+- `STUDENT.md` jest uzupełniony;
+- finalny kod znajduje się na `main`;
+- finalny wymagany workflow GitHub Actions zakończył się poprawnie.
+
+Classroom 50 zbiera informacje o pracy z przypisanego Ci repozytorium.
+
+**Nie wysyłaj prowadzącemu dodatkowego linku do repozytorium, chyba że zostaniesz o to poproszony/a.**
+
+---
+
+# Lista kontrolna przed zakończeniem
+
+- [ ] Zaakceptowałem/am assignment przez Classroom 50.
+- [ ] Pracuję w repozytorium utworzonym dla mnie przez Classroom 50.
+- [ ] Nie utworzyłem/am własnego repozytorium przez `Use this template`.
+- [ ] Sklonowałem/am właściwe repozytorium lokalnie.
+- [ ] `origin` wskazuje na moje repozytorium zadania.
+- [ ] Oba programy uruchomiłem/am lokalnie.
+- [ ] Zmieniłem/am komunikaty w C++ i Java.
+- [ ] `STUDENT.md` jest uzupełniony.
+- [ ] Pierwszy PR `lab00-setup → main` został scalony.
+- [ ] W historii znajduje się ćwiczenie z błędem kompilacji i jego poprawką.
+- [ ] Drugi PR `lab00-debug → main` został scalony.
+- [ ] Finalna wersja znajduje się na `main`.
+- [ ] Lokalny `main` jest zsynchronizowany z GitHub.
+- [ ] Finalne GitHub Actions są zielone.
+
+---
+
+# Krótka obrona
+
+Przygotuj się do pokazania repozytorium oraz uruchomienia programów.
+
+Możesz otrzymać pytania:
+
+1. Czym różni się Git od GitHub?
+2. Czym różni się `commit` od `push`?
+3. Co robi `git add`?
+4. Co oznacza `origin`?
+5. Dlaczego po scaleniu PR na GitHub wykonujemy lokalnie `git pull`?
+6. Czym różni się branch od oddzielnego repozytorium?
+7. Co sprawdza GitHub Actions, a czego nie sprawdza?
+8. Jaką rolę pełni Classroom 50?
+9. Jaka jest różnica między template repository a Twoim student repository?
+
+---
+
+# Kryterium zaliczenia
+
+Zaliczenie wymaga:
+
+- pracy we właściwym repozytorium Classroom 50;
+- działających programów C++ i Java;
+- zmian wysłanych na GitHub;
+- poprawnej historii Git;
+- wykonania ćwiczeń z branchami;
+- wykonania Pull Request;
+- przeanalizowania celowego błędu kompilacji;
+- uzupełnionego `STUDENT.md`;
+- finalnej poprawnej wersji na `main`;
+- umiejętności wyjaśnienia podstawowego workflow Git/GitHub.
+
+---
+
+# Schemat pracy
+
+```text
+Classroom 50
+      ↓
+Accept assignment
+      ↓
+indywidualne student repository
+      ↓
+git clone
+      ↓
+branch
+      ↓
+edit → compile → test
+      ↓
+git add → commit → push
+      ↓
+Pull Request
+      ↓
+GitHub Actions
+      ↓
+merge do main
+      ↓
+git pull
+      ↓
+Classroom 50 zbiera submission
+```
+
+Ten sam podstawowy model pracy będzie używany w kolejnych laboratoriach.
